@@ -36,8 +36,6 @@ app.use(express.urlencoded({ extended: true })) // parses encoded requests
 app.use(express.static('public')) // serve files from public folder statically
 app.use(express.json()) // parses requests with json
 
-
-
 const captains = [
     {
         name: 'James T. Kirk',
@@ -93,6 +91,56 @@ app.get('/captains/seed', (req, res) => {
                     res.json(data)
                 })
         })
+})
+
+// index route
+app.get('/captains', (req, res) => {
+    // use mongoose methods to GET data
+    Captain.find({})
+        .then(captains => {
+            res.json({captains: captains})
+        })
+        .catch(err => console.log(err))
+})
+
+// show route
+app.get('/captains/:id', (req, res) => {
+    const id = req.params.id
+    Captain.findById(id)
+        .then(captain => {
+            res.json({captain: captain})
+        })
+        .catch(err => console.log(err))
+})
+
+// create route
+app.post('/captains', (req, res) => {
+    // get request body
+    Captain.create(req.body)
+        .then(captain => {
+            res.status(201).json({captain: captain.toObject()})
+        })
+        .catch(err => console.log(err))
+})
+
+// update route
+app.put('/captains/:id', (req, res) => {
+    const id = req.params.id
+    Captain.findByIdAndUpdate(id, req.body, {new: true})
+        .then(captain => {
+            res.sendStatus(204)
+        })
+        .catch(err => console.log(err))
+})
+
+// destroy route
+app.delete('/captains/:id', (req, res) => {
+    const id = req.params.id
+    Captain.findByIdAndRemove(id)
+        .then(captain => {
+            res.sendStatus(204)
+        })
+        .catch(err => res.json(err))
 })
 
 // server listener
