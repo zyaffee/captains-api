@@ -1,7 +1,6 @@
 // import dependencies
 const express = require('express')
 const Captain = require('../models/captain')
-const Fruit = require('../models/captain')
 
 // create router
 const router = express.Router()
